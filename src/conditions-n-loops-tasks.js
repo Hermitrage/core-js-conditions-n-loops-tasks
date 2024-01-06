@@ -543,8 +543,29 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let result = str;
+  const original = str;
+
+  for (let i = 0; i < iterations; i += 1) {
+    let odds = '';
+    let evens = '';
+
+    for (let j = 0; j < result.length; j += 2) {
+      odds += result[j];
+      evens += result[j + 1] || '';
+    }
+
+    result = odds + evens;
+
+    if (result === original) {
+      const iterationCount = i + 1;
+      const skipCount = Math.floor(iterations / iterationCount);
+      i = iterationCount * skipCount - 1;
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -564,8 +585,49 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  if (number < 10) {
+    return number;
+  }
+
+  const digits = [];
+  let tempNumber = number;
+
+  while (tempNumber > 0) {
+    digits.unshift(tempNumber % 10);
+    tempNumber = Math.floor(tempNumber / 10);
+  }
+
+  let i = digits.length - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i === -1) {
+    return number;
+  }
+
+  let j = digits.length - 1;
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  [digits[i], digits[j]] = [digits[j], digits[i]];
+
+  let start = i + 1;
+  let end = digits.length - 1;
+  while (start < end) {
+    [digits[start], digits[end]] = [digits[end], digits[start]];
+    start += 1;
+    end -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < digits.length; k += 1) {
+    result = result * 10 + digits[k];
+  }
+
+  return result;
 }
 
 module.exports = {
